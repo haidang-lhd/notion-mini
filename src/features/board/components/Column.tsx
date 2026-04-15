@@ -1,4 +1,5 @@
 import { Task } from "../types/board.types";
+import TaskCard from "./TaskCard";
 
 interface Props {
   title: string;
@@ -11,9 +12,7 @@ const Column = ({ title, tasks }: Props) => {
       <h3>{title}</h3>
 
       {tasks.map((task) => (
-        <div key={task.id} style={{ padding: "8px", margin: "4px 0", background: "#f5f5f5" }}>
-          {task.title}
-        </div>
+        <TaskCard key={task.id} task={task} />
       ))}
     </div>
   );

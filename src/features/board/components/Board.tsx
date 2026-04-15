@@ -1,18 +1,17 @@
 import { useBoard } from "../hooks/useBoard";
-import Column from "./Column";
+import { Column } from "@/features/board/components";
 
 const Board = () => {
   const { tasks } = useBoard();
 
-  const todoTasks = tasks.filter((t) => t.status === "todo");
-  const doingTasks = tasks.filter((t) => t.status === "doing");
-  const doneTasks = tasks.filter((t) => t.status === "done");
+  const getTasksByStatus = (status: string) =>
+  tasks.filter((t) => t.status === status);
 
   return (
     <div style={{ display: "flex", gap: "16px" }}>
-      <Column title="Todo" tasks={todoTasks} />
-      <Column title="Doing" tasks={doingTasks} />
-      <Column title="Done" tasks={doneTasks} />
+      <Column title="Todo" tasks={getTasksByStatus("todo")} />
+      <Column title="Doing" tasks={getTasksByStatus("doing")} />
+      <Column title="Done" tasks={getTasksByStatus("done")} />
     </div>
   );
 };
