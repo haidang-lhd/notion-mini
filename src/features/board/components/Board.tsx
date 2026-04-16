@@ -1,17 +1,45 @@
+import { useState } from "react";
 import { useBoard } from "../hooks/useBoard";
 import { Column } from "@/features/board/components";
 
-const Board = () => {
-  const { tasks } = useBoard();
+const columns = [
+  { title: "Todo", status: "todo" },
+  { title: "Doing", status: "doing" },
+  { title: "Done", status: "done" },
+];
 
-  const getTasksByStatus = (status: string) =>
-  tasks.filter((t) => t.status === status);
+const Board = () => {
+  const { tasks, addTask } = useBoard();
+  const [input, setInput] = useState("");
 
   return (
-    <div style={{ display: "flex", gap: "16px" }}>
-      <Column title="Todo" tasks={getTasksByStatus("todo")} />
-      <Column title="Doing" tasks={getTasksByStatus("doing")} />
-      <Column title="Done" tasks={getTasksByStatus("done")} />
+    <div>
+      <div style={{ marginBottom: "16px" }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Enter task..."
+        />
+        <button
+          onClick={() => {
+            if (!input.trim()) return;
+            addTask(input);
+            setInput("");
+          }}
+        >
+          Add
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: "16px" }}>
+        {columns.map((col) => (
+          <Column
+            key={col.status}
+            title={col.title}
+            tasks={tasks.filter((t) => t.status === col.status)}
+          />
+        ))}
+      </div>
     </div>
   );
 };
