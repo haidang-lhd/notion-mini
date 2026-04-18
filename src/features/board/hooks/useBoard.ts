@@ -9,6 +9,18 @@ const initialTasks: Task[] = [
 export const useBoard = () => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
+  const deleteTask = (id: string) => {
+    setTasks(tasks.filter((t) => t.id !== id));
+  };
+
+  const updateTask = (id: string, newTitle: string) => {
+  setTasks(
+    tasks.map((t) =>
+      t.id === id ? { ...t, title: newTitle } : t
+    )
+  );
+};
+
   const addTask = (title: string) => {
     const newTask: Task = {
       id: Date.now().toString(),
@@ -21,5 +33,7 @@ export const useBoard = () => {
   return {
     tasks,
     addTask,
+    deleteTask,
+    updateTask
   };
 };

@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { Task } from "../types/board.types";
 
 interface Props {
   task: Task;
+  deleteTask: (id: string) => void;
+  updateTask: (id: string, newTitle: string) => void;
 }
 
-const TaskCard = ({ task }: Props) => {
+const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [value, setValue] = useState(task.title);
+
   return (
     <div
       style={{
@@ -15,7 +21,25 @@ const TaskCard = ({ task }: Props) => {
         borderRadius: "6px",
       }}
     >
-      {task.title}
+      {isEditing ? (
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={() => {
+            updateTask(task.id, value);
+            setIsEditing(false);
+          }}
+          autoFocus
+        />
+      ) : (
+        <div onClick={() => setIsEditing(true)}>
+          {task.title}
+        </div>
+      )}
+
+      <button onClick={() => deleteTask(task.id)}>
+        Delete
+      </button>
     </div>
   );
 };
