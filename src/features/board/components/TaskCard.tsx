@@ -14,6 +14,14 @@ const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
 
   return (
     <div
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "scale(1.05)";
+        (e.currentTarget.querySelector("button") as HTMLButtonElement).style.opacity = "1";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+        (e.currentTarget.querySelector("button") as HTMLButtonElement).style.opacity = "0";
+      }}
       draggable
       onDragStart={(e) => {
         e.dataTransfer.setData("text/plain", task.id);
@@ -22,9 +30,11 @@ const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
         padding: "10px",
         margin: "6px 0",
         background: "white",
-        border: "1px solid #ddd",
-        borderRadius: "6px",
+        borderRadius: "8px",
+         // CSS property adds shadow effects around an element's frame (box-shadow: [inset] [h-offset] [v-offset] [blur-radius] [spread-radius] [color];)
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         cursor: "grab",
+        transition: "0.2s",
       }}
     >
       {isEditing ? (
@@ -43,7 +53,7 @@ const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
         </div>
       )}
 
-      <button onClick={() => deleteTask(task.id)}>
+      <button onClick={() => deleteTask(task.id)} style={{ marginLeft: "8px", opacity: 0, transition: "0.2s" }}>
         Delete
       </button>
     </div>

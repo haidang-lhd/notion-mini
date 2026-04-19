@@ -1,6 +1,6 @@
-import { Task } from "../types/board.types";
+import { useState } from "react";
+import { Task, TaskStatus } from "../types/board.types";
 import TaskCard from "./TaskCard";
-import { TaskStatus } from "../types/board.types";
 
 interface Props {
   title: string;
@@ -11,15 +11,29 @@ interface Props {
 }
 
 const Column = ({ title, tasks, deleteTask, updateTask, moveTask }: Props) => {
+
+  const [isOver, setIsOver] = useState(false);
+
   return (
     <div
-      onDragOver={(e) => e.preventDefault()} // Allow dropping
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsOver(true);
+      }}
+      onDragLeave={() => setIsOver(false)}
       onDrop={(e) => {
+        e.preventDefault();
         const id = e.dataTransfer.getData("text/plain");
         moveTask(id, title.toLowerCase() as TaskStatus);
+        setIsOver(false);
       }}
-     style={{ flex: 1, padding: "10px", border: "1px solid #ccc" }}>
+     style={{ flex: 1, padding: "12px", background: isOver ? "#e0f2fe" : "#f9fafb", borderRadius: "10px", minHeight: "300px", transition: "0.2s" }}
+    >
       <h3>{title}</h3>
+
+      {tasks.length === 0 && (
+        <p style={{ color: "#999" }}>No tasks</p>
+      )}
 
       {tasks.map((task) => (
         <TaskCard
