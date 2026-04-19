@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Task } from "../types/board.types";
+import { Task, TaskStatus } from "../types/board.types";
 
 interface Props {
   task: Task;
   deleteTask: (id: string) => void;
   updateTask: (id: string, newTitle: string) => void;
-  moveTask: (id: string, newStatus: TaskStatus) => void;
+  moveTask?: (id: string, newStatus: TaskStatus) => void;
 }
 
-const TaskCard = ({ task, deleteTask, updateTask, moveTask }: Props) => {
+const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(task.title);
 
