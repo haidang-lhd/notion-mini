@@ -5,20 +5,26 @@ interface Props {
   task: Task;
   deleteTask: (id: string) => void;
   updateTask: (id: string, newTitle: string) => void;
+  moveTask: (id: string, newStatus: TaskStatus) => void;
 }
 
-const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
+const TaskCard = ({ task, deleteTask, updateTask, moveTask }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(task.title);
 
   return (
     <div
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData("text/plain", task.id);
+      }}
       style={{
         padding: "10px",
         margin: "6px 0",
         background: "white",
         border: "1px solid #ddd",
         borderRadius: "6px",
+        cursor: "grab",
       }}
     >
       {isEditing ? (

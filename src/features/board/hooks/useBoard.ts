@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Task } from "../types/board.types";
+import { Task, TaskStatus } from "../types/board.types";
 
 const initialTasks: Task[] = [
   { id: "1", title: "Learn React", status: "todo" },
@@ -14,12 +14,20 @@ export const useBoard = () => {
   };
 
   const updateTask = (id: string, newTitle: string) => {
-  setTasks(
-    tasks.map((t) =>
-      t.id === id ? { ...t, title: newTitle } : t
-    )
-  );
-};
+    setTasks(
+      tasks.map((t) =>
+        t.id === id ? { ...t, title: newTitle } : t
+      )
+    );
+  };
+
+  const moveTask = (id: string, newStatus: TaskStatus) => {
+    setTasks(
+      tasks.map((t) =>
+        t.id === id ? { ...t, status: newStatus } : t
+      )
+    );
+  };
 
   const addTask = (title: string) => {
     const newTask: Task = {
@@ -34,6 +42,7 @@ export const useBoard = () => {
     tasks,
     addTask,
     deleteTask,
-    updateTask
+    updateTask,
+    moveTask,
   };
 };

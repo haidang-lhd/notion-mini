@@ -9,7 +9,7 @@ const columns = [
 ];
 
 const Board = () => {
-  const { tasks, addTask, deleteTask, updateTask } = useBoard();
+  const { tasks, addTask, deleteTask, updateTask, moveTask } = useBoard();
   const [input, setInput] = useState("");
 
   return (
@@ -39,6 +39,7 @@ const Board = () => {
             tasks={tasks.filter((t) => t.status === col.status)}
             deleteTask={deleteTask}
             updateTask={updateTask}
+            moveTask={moveTask}
           />
         ))}
       </div>
