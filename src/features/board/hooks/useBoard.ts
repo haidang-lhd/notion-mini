@@ -1,48 +1,56 @@
 import { useEffect, useState } from "react";
-import { Task, TaskStatus } from "../types/board.types";
+import { Task } from "../types/board.types";
+import { STORAGE_KEY, TASK_STATUS } from "../constants/board.constants";
+import { useTaskActions } from "./useTaskActions";
 
 const initialTasks: Task[] = [
-  { id: "1", title: "Learn React", status: "todo" },
-  { id: "2", title: "Build UI", status: "doing" },
+  { id: "1", title: "Learn React", status: TASK_STATUS.TODO },
+  { id: "2", title: "Build UI", status: TASK_STATUS.DOING },
 ];
 
-export const useBoard = () => {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem("tasks");
+/**
+ * Initialize tasks from localStorage with fallback to initial tasks
+ * @returns Tasks array from storage or initial tasks
+ */
+const loadTasksFromStorage = (): Task[] => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : initialTasks;
-  });
+  } catch (error) {
+    console.error("Failed to load tasks from localStorage:", error);
+    return initialTasks;
+  }
+};
 
-  const deleteTask = (id: string) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
+/**
+ * Hook for managing board state and task operations
+ *
+ * Responsibilities:
+ * - Manages tasks state
+ * - Handles localStorage persistence (load + save)
+ * - Provides task action handlers via useTaskActions hook
+ *
+ * @returns Object with tasks state and action handlers
+ */
+export const useBoard = () => {
+  const [tasks, setTasks] = useState<Task[]>(loadTasksFromStorage);
 
-  const updateTask = (id: string, newTitle: string) => {
-    setTasks(
-      tasks.map((t) =>
-        t.id === id ? { ...t, title: newTitle } : t
-      )
-    );
-  };
+  /**
+   * Get task action handlers
+   * These are pure functions that handle all task mutations
+   */
+  const { addTask, deleteTask, updateTask, moveTask } =
+    useTaskActions(setTasks);
 
-  const moveTask = (id: string, newStatus: TaskStatus) => {
-    setTasks(
-      tasks.map((t) =>
-        t.id === id ? { ...t, status: newStatus } : t
-      )
-    );
-  };
-
-  const addTask = (title: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title,
-      status: "todo",
-    };
-    setTasks([...tasks, newTask]);
-  };
-
+  /**
+   * Persist tasks to localStorage whenever they change
+   */
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    } catch (error) {
+      console.error("Failed to save tasks to localStorage:", error);
+    }
   }, [tasks]);
 
   return {

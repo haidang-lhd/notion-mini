@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { useBoard } from "../hooks/useBoard";
 import { Column } from "@/features/board/components";
-
-const columns = [
-  { title: "Todo", status: "todo" },
-  { title: "Doing", status: "doing" },
-  { title: "Done", status: "done" },
-];
+import { COLUMNS } from "../constants/board.constants";
+import { filterTasksByStatus } from "../utils/board.utils";
 
 const Board = () => {
   const { tasks, addTask, deleteTask, updateTask, moveTask } = useBoard();
   const [input, setInput] = useState("");
+
+  const handleAddTask = () => {
+    if (!input.trim()) return;
+    addTask(input);
+    setInput("");
+  };
 
   return (
     <div>
@@ -27,12 +29,8 @@ const Board = () => {
           }}
         />
         <button
-          onClick={() => {
-            if (!input.trim()) return;
-            addTask(input);
-            setInput("");
-          }}
-           style={{
+          onClick={handleAddTask}
+          style={{
             padding: "8px 12px",
             borderRadius: "6px",
             border: "none",
@@ -46,11 +44,11 @@ const Board = () => {
       </div>
 
       <div style={{ display: "flex", gap: "16px", padding: "20px", background: "#f5f5f5", minHeight: "100px" }}>
-        {columns.map((col) => (
+        {COLUMNS.map((col) => (
           <Column
             key={col.status}
             title={col.title}
-            tasks={tasks.filter((t) => t.status === col.status)}
+            tasks={filterTasksByStatus(tasks, col.status)}
             deleteTask={deleteTask}
             updateTask={updateTask}
             moveTask={moveTask}
