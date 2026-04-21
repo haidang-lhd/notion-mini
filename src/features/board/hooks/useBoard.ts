@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Task, TaskStatus } from "../types/board.types";
 
 const initialTasks: Task[] = [
@@ -7,7 +7,10 @@ const initialTasks: Task[] = [
 ];
 
 export const useBoard = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem("tasks");
+    return saved ? JSON.parse(saved) : initialTasks;
+  });
 
   const deleteTask = (id: string) => {
     setTasks(tasks.filter((t) => t.id !== id));
@@ -37,6 +40,10 @@ export const useBoard = () => {
     };
     setTasks([...tasks, newTask]);
   };
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   return {
     tasks,
