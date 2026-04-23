@@ -3,6 +3,8 @@ import { useBoard } from "../hooks/useBoard";
 import { Column } from "@/features/board/components";
 import { COLUMNS } from "../constants/board.constants";
 import { filterTasksByStatus } from "../utils/board.utils";
+import Input from "./ui/Input";
+import Button from "./ui/Button";
 
 const Board = () => {
   const { tasks, addTask, deleteTask, updateTask, moveTask } = useBoard();
@@ -17,30 +19,16 @@ const Board = () => {
   return (
     <div>
       <div style={{ marginBottom: "16px" }}>
-        <input
+        <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter task..."
-          style={{
-            padding: "8px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            marginRight: "8px",
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleAddTask();
           }}
         />
-        <button
-          onClick={handleAddTask}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            background: "#2563eb",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
+        <Button onClick={handleAddTask} disabled={!input.trim()}>
           Add
-        </button>
+        </Button>
       </div>
 
       <div style={{ display: "flex", gap: "16px", padding: "20px", background: "#f5f5f5", minHeight: "100px" }}>
