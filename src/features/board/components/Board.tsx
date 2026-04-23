@@ -7,17 +7,37 @@ import Input from "./ui/Input";
 import Button from "./ui/Button";
 
 const Board = () => {
-  const { tasks, addTask, deleteTask, updateTask, moveTask } = useBoard();
+  const {
+    tasks,
+    addTask,
+    deleteTask,
+    updateTask,
+    moveTask,
+    isLoading,
+  } = useBoard();
+
   const [input, setInput] = useState("");
 
   const handleAddTask = () => {
-    if (!input.trim()) return;
-    addTask(input);
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    addTask(trimmed);
     setInput("");
   };
 
+  // 🟡 1. HANDLE LOADING
+  if (isLoading) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <p>Loading board...</p>
+      </div>
+    );
+  }
+
   return (
     <div>
+      {/* 🟢 Input area */}
       <div style={{ marginBottom: "16px" }}>
         <Input
           value={input}
@@ -25,24 +45,47 @@ const Board = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleAddTask();
           }}
+          placeholder="Add a new task..."
         />
+
         <Button onClick={handleAddTask} disabled={!input.trim()}>
           Add
         </Button>
       </div>
 
-      <div style={{ display: "flex", gap: "16px", padding: "20px", background: "#f5f5f5", minHeight: "100px" }}>
-        {COLUMNS.map((col) => (
-          <Column
-            key={col.status}
-            title={col.title}
-            tasks={filterTasksByStatus(tasks, col.status)}
-            deleteTask={deleteTask}
-            updateTask={updateTask}
-            moveTask={moveTask}
-          />
-        ))}
-      </div>
+      {/* 🟡 2. EMPTY STATE (full board) */}
+      {tasks.length === 0 ? (
+        <div
+          style={{
+            textAlign: "center",
+            color: "#999",
+            marginTop: "40px",
+          }}
+        >
+          No tasks yet. Start by adding one 🚀
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            gap: "16px",
+            padding: "20px",
+            background: "#f5f5f5",
+            minHeight: "100px",
+          }}
+        >
+          {COLUMNS.map((col) => (
+            <Column
+              key={col.status}
+              title={col.title}
+              tasks={filterTasksByStatus(tasks, col.status)}
+              deleteTask={deleteTask}
+              updateTask={updateTask}
+              moveTask={moveTask}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

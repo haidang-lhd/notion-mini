@@ -31,19 +31,28 @@ const Column = ({ title, tasks, deleteTask, updateTask, moveTask }: Props) => {
     >
       <h3>{title}</h3>
 
-      {tasks.length === 0 && (
-        <p style={{ color: "#999" }}>No tasks</p>
+      {tasks.length === 0 ? (
+        <div
+          style={{
+            textAlign: "center",
+            color: "#999",
+            marginTop: "20px",
+            fontSize: "14px",
+          }}
+        >
+          No tasks here 👀
+        </div>
+      ) : (
+        tasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+            moveTask={moveTask}
+          />
+        ))
       )}
-
-      {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          deleteTask={deleteTask}
-          updateTask={updateTask}
-          moveTask={moveTask}
-        />
-      ))}
     </div>
   );
 };

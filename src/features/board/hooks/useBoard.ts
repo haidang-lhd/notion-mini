@@ -34,6 +34,7 @@ const loadTasksFromStorage = (): Task[] => {
  */
 export const useBoard = () => {
   const [tasks, setTasks] = useState<Task[]>(loadTasksFromStorage);
+  const [isLoading, setIsLoading] = useState(true);
 
   /**
    * Get task action handlers
@@ -53,11 +54,20 @@ export const useBoard = () => {
     }
   }, [tasks]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return {
     tasks,
     addTask,
     deleteTask,
     updateTask,
     moveTask,
+    isLoading,
   };
 };
