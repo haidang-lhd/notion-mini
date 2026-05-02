@@ -1,4 +1,4 @@
-import Board from "../components/Board";
+import { Board } from "@/features/board";
 
 const BoardPage = () => {
   return (

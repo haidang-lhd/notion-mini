@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useBoard } from "../hooks/useBoard";
-import { Column } from "@/features/board/components";
+import { Column } from "./index";
 import { COLUMNS } from "../constants/board.constants";
 import { filterTasksByStatus } from "../utils/board.utils";
 import Input from "./ui/Input";
