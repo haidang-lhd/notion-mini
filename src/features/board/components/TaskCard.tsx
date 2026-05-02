@@ -12,6 +12,31 @@ interface Props {
 const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(task.title);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleSave = () => {
+    const trimmed = value.trim();
+    if (trimmed && trimmed !== task.title) {
+      updateTask(task.id, trimmed);
+    } else if (!trimmed) {
+      setValue(task.title);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setValue(task.title);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      handleCancel();
+    }
+  };
 
   return (
     <Card
@@ -22,27 +47,26 @@ const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
       }}
     >
       <div
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "scale(1.05)";
-          (e.currentTarget.querySelector("button") as HTMLButtonElement).style.opacity = "1";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          (e.currentTarget.querySelector("button") as HTMLButtonElement).style.opacity = "0";
-        }}
-        draggable
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         onDragStart={(e) => {
+          setIsDragging(true);
           e.dataTransfer.setData("text/plain", task.id);
+        }}
+        onDragEnd={() => setIsDragging(false)}
+        draggable
+        style={{
+          transform: isHovered ? "scale(1.05)" : "scale(1)",
+          opacity: isDragging ? 0.5 : 1,
+          transition: "0.2s",
         }}
       >
         {isEditing ? (
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            onBlur={() => {
-              updateTask(task.id, value);
-              setIsEditing(false);
-            }}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
             autoFocus
           />
         ) : (
@@ -51,7 +75,14 @@ const TaskCard = ({ task, deleteTask, updateTask }: Props) => {
           </div>
         )}
 
-        <button onClick={() => deleteTask(task.id)} style={{ marginLeft: "8px", opacity: 0, transition: "0.2s" }}>
+        <button
+          onClick={() => deleteTask(task.id)}
+          style={{
+            marginLeft: "8px",
+            opacity: isHovered ? 1 : 0,
+            transition: "0.2s",
+          }}
+        >
           Delete
         </button>
       </div>
